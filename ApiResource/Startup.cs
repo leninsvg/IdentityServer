@@ -1,5 +1,5 @@
 ﻿
-using ApiClient.Models;
+using ApiResource.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -23,11 +23,22 @@ namespace ApiClient
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
-			services.AddDbContext<BankContext>(options => 
-				options.UseSqlServer(Configuration.GetConnectionString("BankingDbContection")));
-			//services.AddDbContext<BankContext>(options =>
-			//	options.UseInMemoryDatabase("BankingDbContection"));
-			services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            // Configure the resource identity server
+            services.AddAuthentication("Bearer")
+                .AddIdentityServerAuthentication(options =>
+                {
+                    options.Authority = "http://localhost:5000";
+                    options.RequireHttpsMetadata = false;
+                    options.ApiName = "ApiResource";
+                });
+            // Configure the context
+            // In Memory
+			//services.AddDbContext<BankContext>(options => 
+			//	options.UseSqlServer(Configuration.GetConnectionString("BankingDbConection")));
+            // Data Base
+            services.AddDbContext<BankContext>(options =>
+                options.UseInMemoryDatabase("BankingDbConection"));
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 		}
 
 
@@ -39,7 +50,7 @@ namespace ApiClient
 			{
 				app.UseDeveloperExceptionPage();
 			}
-
+            app.UseAuthentication();
 			app.UseMvc();
 		}
 	}
