@@ -15,6 +15,7 @@ namespace IdentityServer
 
 		public static IEnumerable<Client> GetClients()
 		{
+			// Client-Credential base grant type
 			return new List<Client>()
 			{
 				new Client()
