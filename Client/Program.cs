@@ -14,6 +14,28 @@ namespace Client
 
         private static async Task MainAsync()
         {
+            var discoRO = await DiscoveryClient.GetAsync("http://localhost:5000");
+            if (discoRO.IsError)
+            {
+                Console.WriteLine(discoRO.Error);
+                return;
+            }
+            // Grab a bearer token using ResourceOuwnerPassword Grant Type
+            var tokenClientRO = new TokenClient(discoRO.TokenEndpoint, "ro.client", "secret");
+            var tokenResponseRO = await tokenClientRO.RequestResourceOwnerPasswordAsync
+                    ("Lenin","123", "ApiResource");
+
+            if (tokenResponseRO.IsError)
+            {
+                Console.WriteLine(tokenResponseRO.Error);
+                return;
+            }
+            Console.WriteLine(tokenResponseRO.Json);
+            Console.WriteLine("\n\n\n");
+
+            /***
+             * Client Credentials
+             * */
             // Discovery all the endpoints using metadata od identity server
             var disco = await DiscoveryClient.GetAsync("http://localhost:5000");
             if (disco.IsError)
@@ -21,7 +43,7 @@ namespace Client
                 Console.WriteLine(disco.Error);
                 return;
             }
-            // Configure acess client
+            // Grab a bearer token. Configure acess client
             var tokenClient = new TokenClient(disco.TokenEndpoint, "client", "secret");
             var tokenResponse = await tokenClient.RequestClientCredentialsAsync("ApiResource");
 
