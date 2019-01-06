@@ -38,8 +38,9 @@ namespace IdentityServer
 		{
 			return new List<ApiResource>()
 			{
-				new ApiResource("ApiResource", "Customer of api for bankOfDotNetApi")
-			};
+				new ApiResource("ApiResource", "Customer of api for bankOfDotNetApi"),
+                new ApiResource("ApiResource2", "Customer of api for bankOfDotNetApi")
+            };
 		}
 
 		public static IEnumerable<Client> GetClients()
@@ -66,7 +67,7 @@ namespace IdentityServer
                     {
                         new Secret("secret".Sha256())
                     },
-                    AllowedScopes = { "ApiResource" }
+                    AllowedScopes = { "ApiResource", "ApiResource2" }
                 },
                 // ImplicitFlow grant type
                 new Client()

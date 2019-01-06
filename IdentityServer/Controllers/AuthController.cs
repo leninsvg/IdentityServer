@@ -42,7 +42,7 @@ namespace IdentityServer.Controllers
             }
             var tokenClientRO = new TokenClient(disco.TokenEndpoint, "ro.client", "secret");
             var tokenResponseRO = await tokenClientRO.RequestResourceOwnerPasswordAsync
-                    ("Lenin", "123", "ApiResource");
+                    ("Lenin", "123", "ApiResource ApiResource2");
             if (tokenResponseRO.IsError)
             {
                 Console.WriteLine(tokenResponseRO.Error);

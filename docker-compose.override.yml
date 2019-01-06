@@ -19,3 +19,10 @@ services:
     ports:
       - "5003:80"
 
+
+  apiresource2:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "5004:80"
+

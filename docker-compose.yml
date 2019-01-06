@@ -20,3 +20,10 @@ services:
       context: .
       dockerfile: MvcClient/Dockerfile
 
+
+  apiresource2:
+    image: ${DOCKER_REGISTRY-}apiresource2
+    build:
+      context: .
+      dockerfile: ApiResource2/Dockerfile
+
