@@ -1,0 +1,22 @@
+version: '3.4'
+
+services:
+  identityserver:
+    image: ${DOCKER_REGISTRY-}identityserver
+    build:
+      context: .
+      dockerfile: IdentityServer/Dockerfile
+
+  apiresource:
+    image: ${DOCKER_REGISTRY-}apiresource
+    build:
+      context: .
+      dockerfile: ApiResource/Dockerfile
+
+
+  mvcclient:
+    image: ${DOCKER_REGISTRY-}mvcclient
+    build:
+      context: .
+      dockerfile: MvcClient/Dockerfile
+

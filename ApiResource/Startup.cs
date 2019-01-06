@@ -27,7 +27,7 @@ namespace ApiClient
             services.AddAuthentication("Bearer")
                 .AddIdentityServerAuthentication(options =>
                 {
-                    options.Authority = "http://localhost:5000";
+                    options.Authority = "http://identityserver";
                     options.RequireHttpsMetadata = false;
                     options.ApiName = "ApiResource";
                 });
@@ -38,6 +38,14 @@ namespace ApiClient
             // Data Base
             services.AddDbContext<BankContext>(options =>
                 options.UseInMemoryDatabase("BankingDbConection"));
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowSpecificOrigin",
+                    builder => builder.AllowAnyHeader()
+                 .AllowAnyMethod()
+                 .AllowAnyOrigin()
+                 .AllowCredentials());
+            });
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 		}
 
@@ -50,6 +58,7 @@ namespace ApiClient
 			{
 				app.UseDeveloperExceptionPage();
 			}
+            app.UseCors("AllowSpecificOrigin");
             app.UseAuthentication();
 			app.UseMvc();
 		}

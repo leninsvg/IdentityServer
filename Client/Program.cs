@@ -14,7 +14,7 @@ namespace Client
 
         private static async Task MainAsync()
         {
-            var discoRO = await DiscoveryClient.GetAsync("http://localhost:5000");
+            var discoRO = await DiscoveryClient.GetAsync("http://localhost:3000");
             if (discoRO.IsError)
             {
                 Console.WriteLine(discoRO.Error);
