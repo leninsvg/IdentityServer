@@ -12,7 +12,7 @@ namespace Client
     {
         static void Main(string[] args) => MainAsync().GetAwaiter().GetResult();
 
-        private static async Task MainAsync()
+        private async void InvokeResourceOwnerClient()
         {
             var discoRO = await DiscoveryClient.GetAsync("http://localhost:3000");
             if (discoRO.IsError)
@@ -23,7 +23,7 @@ namespace Client
             // Grab a bearer token using ResourceOuwnerPassword Grant Type
             var tokenClientRO = new TokenClient(discoRO.TokenEndpoint, "ro.client", "secret");
             var tokenResponseRO = await tokenClientRO.RequestResourceOwnerPasswordAsync
-                    ("Lenin","123", "ApiResource");
+                    ("Lenin", "123", "ApiResource");
 
             if (tokenResponseRO.IsError)
             {
@@ -32,10 +32,13 @@ namespace Client
             }
             Console.WriteLine(tokenResponseRO.Json);
             Console.WriteLine("\n\n\n");
+        }
 
+        private async void InvokeResourceClientCredentials()
+        {
             /***
-             * Client Credentials
-             * */
+            * Client Credentials
+            * */
             // Discovery all the endpoints using metadata od identity server
             var disco = await DiscoveryClient.GetAsync("http://localhost:5000");
             if (disco.IsError)
@@ -82,6 +85,47 @@ namespace Client
                 Console.WriteLine(JArray.Parse(content));
             }
             Console.Read();
+        }
+
+        private static async void InvokeResourceIdentityClientCredentials()
+        {
+            var disco = await DiscoveryClient.GetAsync("http://localhost:5000");
+            if (disco.IsError)
+            {
+                Console.WriteLine(disco.Error);
+                return;
+            }
+            // Grab a bearer token. Configure acess client
+            var tokenClient = new TokenClient(disco.TokenEndpoint, "client", "secret");
+            var tokenResponse = await tokenClient.RequestClientCredentialsAsync("ApiResource");
+
+            if (tokenResponse.IsError)
+            {
+                Console.WriteLine(tokenResponse.Error);
+                return;
+            }
+        }
+        private static async Task MainAsync()
+        {
+            var disco = await DiscoveryClient.GetAsync("http://localhost:5000");
+            if (disco.IsError)
+            {
+                Console.WriteLine(disco.Error);
+                return;
+            }
+            // Grab a bearer token. Configure acess client
+            var tokenClient = new TokenClient(disco.TokenEndpoint, "client", "secret");
+            var tokenResponse = await tokenClient.RequestClientCredentialsAsync("ApiResource");
+
+            if (tokenResponse.IsError)
+            {
+                Console.WriteLine(tokenResponse.Error);
+                return;
+            }
+            var client = new HttpClient();
+            client.SetBearerToken(tokenResponse.AccessToken);
+            var createCustomerResponse = await client.GetAsync("http://localhost:5000/api/default");
+            var a = await createCustomerResponse.Content.ReadAsStringAsync();
         }
     }
 }

@@ -26,6 +26,13 @@ namespace IdentityServer
                 .AddInMemoryApiResources(Config.GetAllApiResources())
                 .AddInMemoryClients(Config.GetClients())
                 .AddTestUsers(Config.GetUsers()); //ResourceOwner flow, Implicit flow
+            services.AddAuthentication("Bearer")
+               .AddIdentityServerAuthentication(options =>
+               {
+                   options.Authority = "http://localhost:5000";
+                   options.RequireHttpsMetadata = false;
+                   options.ApiName = "ApiResource";
+               });
             services.AddCors(options =>
             {
                 options.AddPolicy("AllowSpecificOrigin",
@@ -46,6 +53,7 @@ namespace IdentityServer
             //app.UseCors("AllowSpecificOrigin");
             // Activacion del identity server
             app.UseIdentityServer();
+            app.UseAuthentication();
             // Https configuration
             //app.UseHttpsRedirection();
             // Activacion  del MVC para trabajar con Identity server configuracion Implicita
