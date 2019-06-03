@@ -13,19 +13,10 @@ namespace IdentityServer
             //Configuracion para Implicit IdentityServer. Activacion del MVC
             services.AddMvc();
 
-            // COnfiguracion basica del Identity service
-            services.AddIdentityServer(options =>
-            {
-                //options.IssuerUri = "identityserver";
-                //options.Events.RaiseSuccessEvents = true;
-                //options.Events.RaiseFailureEvents = true;
-                //options.Events.RaiseErrorEvents = true;
-            })
-                .AddDeveloperSigningCredential()
-                .AddInMemoryIdentityResources(Config.GetIdentityResources()) // Implicit flow
-                .AddInMemoryApiResources(Config.GetAllApiResources())
-                .AddInMemoryClients(Config.GetClients())
-                .AddTestUsers(Config.GetUsers()); //ResourceOwner flow, Implicit flow
+            // IdentitytServer configuration
+            services.ConfigureIdentityServerInMemory();
+
+
             services.AddAuthentication("Bearer")
                .AddIdentityServerAuthentication(options =>
                {
@@ -33,6 +24,8 @@ namespace IdentityServer
                    options.RequireHttpsMetadata = false;
                    options.ApiName = "ApiResource";
                });
+
+
             services.AddCors(options =>
             {
                 options.AddPolicy("AllowSpecificOrigin",
@@ -60,5 +53,18 @@ namespace IdentityServer
             app.UseStaticFiles();
             app.UseMvcWithDefaultRoute();
         }
+    }
+    public static class CustomExtensionMethods
+    {
+        public static IServiceCollection ConfigureIdentityServerInMemory(this IServiceCollection services)
+        {
+            services.AddIdentityServer()
+                .AddDeveloperSigningCredential()
+                .AddInMemoryIdentityResources(Config.GetIdentityResources()) // Implicit flow
+                .AddInMemoryApiResources(Config.GetAllApiResources())
+                .AddInMemoryClients(Config.GetClients())
+                .AddTestUsers(Config.GetUsers()); //ResourceOwner flow, Implicit flow
+            return services;
+        }      
     }
 }
