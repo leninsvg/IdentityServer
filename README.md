@@ -19,9 +19,9 @@ var disco = await client.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest
 
 ```
 
-#### Configuracion Migrations IdentityServer
+### Configuracion Migrations IdentityServer
 
-##### Generacion Migracion Inicial
+#### Generacion Migracion Inicial (Requisito en Startup.cs)
 
 **Startup.cs**
 ```
@@ -45,10 +45,16 @@ services.AddIdentityServer()
     .AddTestUsers(Config.GetUsers());                
 ```
 
-**Nuget Package command line**
+#### Nuget Package command line
+
+##### Generacion migracion inicial
 
 ```
 Add-Migration InitialIS4PersistedGrantDBMigration -c PersistedGrantDbContext -o Data/Migrations/IdentityServer/PersistedGrantDb
 ```
 
+##### Configuracion inicial migraciones
 
+```
+Add-Migration InitialIS4ConfigurationDBMigration -c ConfigurationDbContext -o Data/Migrations/IdentityServer/ConfigurationDb
+```
